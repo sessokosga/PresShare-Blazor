@@ -13,22 +13,22 @@ public class PressData : IPressData
     }
 
     public Task<IEnumerable<PressModel>> GetPresses() =>
-        _db.LoadData<PressModel, dynamic>("dbo.spPress_GetAll", new { });
+        _db.LoadData<PressModel, dynamic>("presshare.spPress_GetAll", new { });
 
     public async Task<PressModel?> GetPress(int id)
     {
         var results = await _db.LoadData<PressModel, dynamic>(
-            "dbo.spPress_Get",
+            "presshare.spPress_Get",
             new { Id = id });
         return results.FirstOrDefault();
     }
 
     public Task InsertPress(PressModel press) =>
-        _db.SaveData("dbo.spPress_Insert", new { press.title, press.content });
+        _db.SaveData("presshare.spPress_Insert", new { press.title, press.content, press.genre, press.author_id });
 
     public Task UpdatePress(PressModel press) =>
-        _db.SaveData("dbo.spPress_Update", press);
+        _db.SaveData("presshare.spPress_Update", press);
 
     public Task DeletePress(int id) =>
-        _db.SaveData("dbo.spPress_Delete", new { Id = id });
+        _db.SaveData("presshare.spPress_Delete", new { Id = id });
 }
