@@ -3,11 +3,11 @@ using PresShare.DataAccess.Lib.Models;
 namespace PresShare.DataAccess.Lib.Data;
 public interface IAuthorData
 {
-    Task DeleteUser(int id);
-    Task<AuthorModel?> GetUser(int id);
-    Task<IEnumerable<AuthorModel>> GetUsers();
-    Task InsertUser(AuthorModel user);
-    Task UpdateUserEmail(AuthorModel user);
-    Task UpdateUserPassword(AuthorModel user);
-    Task UpdateUserProfile(AuthorModel user);
+    Task DeleteAuthor(int id);
+    Task<AuthorModel?> GetAuhtor(int id);
+    Task<IEnumerable<AuthorModel>> GetAuthors();
+    Task InsertAuthor(AuthorModel author);
+    Task UpdateAuthorEmail(AuthorModel author);
+    Task UpdateAuthorPassword(AuthorModel author);
+    Task UpdateAuthorProfile(AuthorModel author);
 }

@@ -12,28 +12,28 @@ public class AuthorData : IAuthorData
         _db = db;
     }
 
-    public Task<IEnumerable<AuthorModel>> GetUsers() =>
-        _db.LoadData<AuthorModel, dynamic>("presshare.spUser_GetAll", new { });
+    public Task<IEnumerable<AuthorModel>> GetAuthors() =>
+        _db.LoadData<AuthorModel,dynamic>("presshare.spAuthor_GetAll", new {});
 
-    public async Task<AuthorModel?> GetUser(int id)
+    public async Task<AuthorModel?> GetAuhtor(int id)
     {
         var results = await _db.LoadData<AuthorModel, dynamic>(
-            "presshare.spUser_Get",
+            "presshare.spAuthor_Get",
             new { Id = id });
         return results.FirstOrDefault();
     }
 
-    public Task InsertUser(AuthorModel user) =>
-        _db.SaveData("presshare.spUser_Insert", new { user.pseudo,user.email,user.password });
+    public Task InsertAuthor(AuthorModel author) =>
+        _db.SaveData("presshare.spAuthor_Insert", new { author.pseudo,author.email,author.password });
 
-    public Task UpdateUserProfile(AuthorModel user) =>
-        _db.SaveData("presshare.spUser_UpdateProfile", user);
-    public Task UpdateUserEmail(AuthorModel user) =>
-        _db.SaveData("presshare.spUser_UpdateEmail", user);
-    public Task UpdateUserPassword(AuthorModel user) =>
-        _db.SaveData("presshare.spUser_UpdatePassword", user);
+    public Task UpdateAuthorProfile(AuthorModel author) =>
+        _db.SaveData("presshare.spAuthor_UpdateProfile", author);
+    public Task UpdateAuthorEmail(AuthorModel author) =>
+        _db.SaveData("presshare.spAuthor_UpdateEmail", author);
+    public Task UpdateAuthorPassword(AuthorModel author) =>
+        _db.SaveData("presshare.spAuthor_UpdatePassword", author);
 
 
-    public Task DeleteUser(int id) =>
-        _db.SaveData("presshare.spUser_Delete", new { Id = id });
+    public Task DeleteAuthor(int id) =>
+        _db.SaveData("presshare.spAuthor_Delete", new { Id = id });
 }
