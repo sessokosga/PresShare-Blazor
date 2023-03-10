@@ -5,9 +5,10 @@ public interface IAuthorData
 {
     Task DeleteAuthor(int id);
     Task<AuthorModel?> GetAuhtor(int id);
+    Task<AuthorModel?> GetAuhtorByEmail(string email);
+    Task<AuthorModel?> GetAuhtorByPseudo(string pseudo);
     Task<IEnumerable<AuthorModel>> GetAuthors();
     Task InsertAuthor(AuthorModel author);
-    Task UpdateAuthorEmail(AuthorModel author);
-    Task UpdateAuthorPassword(AuthorModel author);
-    Task UpdateAuthorProfile(AuthorModel author);
+    Task UpdateAuthor(AuthorModel author);
+
 }

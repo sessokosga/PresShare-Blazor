@@ -1,4 +1,4 @@
-CREATE PROCEDURE [presshare].[spUser_Delete]
+CREATE PROCEDURE [presshare].[spAuthor_Delete]
 	@Id int
 AS
 begin
