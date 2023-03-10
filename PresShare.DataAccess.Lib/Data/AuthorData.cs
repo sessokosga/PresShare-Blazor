@@ -23,13 +23,14 @@ public class AuthorData : IAuthorData
         return results.FirstOrDefault();
     }
 
-    public Task InsertAuthor(AuthorModel author) =>
-        _db.SaveData("presshare.spAuthor_Insert", new { author.pseudo,author.email,author.password });
+    public Task InsertAuthor(AuthorModel author) {        
+        return _db.SaveData("presshare.spAuthor_Insert", new { author.pseudo,author.email,author.password, author.confirmation_token });
+    }
 
     public Task UpdateAuthorProfile(AuthorModel author) =>
         _db.SaveData("presshare.spAuthor_UpdateProfile", author);
     public Task UpdateAuthorEmail(AuthorModel author) =>
-        _db.SaveData("presshare.spAuthor_UpdateEmail", author);
+        _db.SaveData("presshare.spAuthor_UpdateEmail", new {author.id, author.email, author.confirmation_token});
     public Task UpdateAuthorPassword(AuthorModel author) =>
         _db.SaveData("presshare.spAuthor_UpdatePassword", author);
 
