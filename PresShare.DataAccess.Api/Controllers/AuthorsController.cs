@@ -92,8 +92,8 @@ public class AuthorsController : ControllerBase
         }
     }
 
-    [HttpPut()]
-    public async Task<IResult> UpdateAuthorProfile(AuthorModel author, IAuthorData data)
+    [HttpPut]
+    public async Task<IResult> UpdateAuthor(AuthorModel author, IAuthorData data)
     {
         try
         {            

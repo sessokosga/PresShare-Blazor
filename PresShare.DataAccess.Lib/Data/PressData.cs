@@ -27,7 +27,7 @@ public class PressData : IPressData
         _db.SaveData("presshare.spPress_Insert", new { press.title, press.content, press.genre, press.author_id });
 
     public Task UpdatePress(PressModel press) =>
-        _db.SaveData("presshare.spPress_Update", press);
+        _db.SaveData("presshare.spPress_Update", new {press.id,press.title,press.content, press.genre});
 
     public Task DeletePress(int id) =>
         _db.SaveData("presshare.spPress_Delete", new { Id = id });
