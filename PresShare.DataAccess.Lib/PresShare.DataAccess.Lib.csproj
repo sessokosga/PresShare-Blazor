@@ -12,4 +12,8 @@
     <PackageReference Include="system.data.sqlclient" Version="4.8.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PresShare.DataModel.Lib\PresShare.DataModel.Lib.csproj" />
+  </ItemGroup>
+
 </Project>

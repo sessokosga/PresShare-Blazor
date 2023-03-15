@@ -1,4 +1,4 @@
-namespace PresShare.DataAccess.Lib.Models;
+namespace PresShare.DataModel.Lib;
 public class PressModel{
     public int id{get;set;}
     public string?  title {get;set;}

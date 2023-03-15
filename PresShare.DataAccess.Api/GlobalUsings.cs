@@ -1,2 +1,2 @@
 global using PresShare.DataAccess.Lib.Data;
-global using PresShare.DataAccess.Lib.Models;
+global using PresShare.DataModel.Lib;

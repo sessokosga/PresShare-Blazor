@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PresShare.DataAccess.Lib\PresShare.DataAccess.Lib.csproj" />
+    <ProjectReference Include="..\PresShare.DataModel.Lib\PresShare.DataModel.Lib.csproj" />
   </ItemGroup>
 
 </Project>

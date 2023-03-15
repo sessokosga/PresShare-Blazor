@@ -1,4 +1,4 @@
-using PresShare.DataAccess.Lib.Models;
+using PresShare.DataModel.Lib;
 
 namespace PresShare.DataAccess.Lib.Data;
 public interface IAuthorData

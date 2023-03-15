@@ -1,5 +1,5 @@
 namespace PresShare.DataAccess.Lib.Data;
-using PresShare.DataAccess.Lib.Models;
+using PresShare.DataModel.Lib;
 
 
 public interface IPressData
