@@ -1,9 +1,27 @@
 ﻿@page "/"
+@using PresShare.Website.Api
+@using PresShare.DataModel.Lib
 
-<PageTitle>Index</PageTitle>
+@inject PressProcessor pressProcess
 
-<h1>Hello, world!</h1>
+<h2>Last press</h2>
 
-Welcome to your new app.
+<h2>Texts <a class="button" href="press/texts">More <img class="svg" src="svg/arrow-right.svg" alt="More"></a></h2>
+<RenderPressFragment presses="@textPresses" />
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<h2>Links <a class="button" href="press/links">More <img class="svg" src="svg/arrow-right.svg" alt="More"></a></h2>
+<RenderPressFragment presses="@linkPresses" />
+@code {
+    private PressModel? press;
+    private IEnumerable<PressModel>? textPresses;
+    private IEnumerable<PressModel>? linkPresses;
+    private List<PressModel>? textPressList;
+    protected override async Task OnInitializedAsync()
+    {
+        textPresses = await pressProcess.LoadPressesByGenre("Text", 6);
+        linkPresses = await pressProcess.LoadPressesByGenre("Link", 6);
+        @* textPressList=textPresses.ToList<PressModel>(); *@
+    }    
+}
+
+

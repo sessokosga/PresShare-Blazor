@@ -1,0 +1,34 @@
+@using PresShare.DataModel.Lib
+
+<div class="parent-press ">
+    @if (presses == null)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+        @foreach (var press in presses)
+        {
+            <div class="press @press.genre.ToLower() ">
+                <b> @press.title </b>
+                <br><small>@press.created_at</small>
+                <a class="genre" href="press/{@press.genre.ToLower()}s">@press.genre.ToLower()</a>
+                @if (press.genre == "Link")
+                {
+                    <a href="@press.content">@press.content</a>
+                    <br />
+                }
+                else
+                {
+                    <p>@press.content</p>
+                }
+    </div>
+;
+        }
+    }
+</div> 
+@code {
+    [Parameter]
+    public IEnumerable<PressModel>? presses { get; set; }        
+    
+}

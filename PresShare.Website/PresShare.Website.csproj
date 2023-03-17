@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <ItemGroup>
-    <ProjectReference Include="..\PresShare.DataAccess.Lib\PresShare.DataAccess.Lib.csproj"/>
+    <ProjectReference Include="..\PresShare.DataAccess.Lib\PresShare.DataAccess.Lib.csproj" />
+    <ProjectReference Include="..\PresShare.DataModel.Lib\PresShare.DataModel.Lib.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9"/>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
