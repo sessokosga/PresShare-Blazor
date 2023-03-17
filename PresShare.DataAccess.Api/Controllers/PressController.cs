@@ -27,7 +27,7 @@ public class PressController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IResult> GetAuthor(IPressData data, int id)
+    public async Task<IResult> GetPress(IPressData data, int id)
     {
         try
         {
@@ -41,6 +41,72 @@ public class PressController : ControllerBase
             return Results.Problem(ex.Message);
         }
     }
+
+    
+    [HttpGet("text")]
+    public async Task<IResult> GetPressText(IPressData data)
+    {
+        try
+        {
+            var results = await data.GetPressesByGenre("Text");
+            if (results == null)
+                return Results.NotFound();
+            return Results.Ok(results);
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(ex.Message);
+        }
+    }
+    [HttpGet("text/{limit}")]
+    public async Task<IResult> GetPressText(IPressData data,int limit)
+    {
+        try
+        {
+            var results = await data.GetPressByGenre("Text",limit);
+            if (results == null)
+                return Results.NotFound();
+            return Results.Ok(results);
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(ex.Message);
+        }
+    }
+
+    [HttpGet("link")]
+    public async Task<IResult> GetPressLink(IPressData data)
+    {
+        try
+        {
+            var results = await data.GetPressesByGenre("Link");
+            if (results == null)
+                return Results.NotFound();
+            return Results.Ok(results);
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(ex.Message);
+        }
+    }
+    [HttpGet("link/{limit}")]
+    public async Task<IResult> GetPressLink(IPressData data,int limit)
+    {
+        try
+        {
+            var results = await data.GetPressByGenre("Link",limit);
+            if (results == null)
+                return Results.NotFound();
+            return Results.Ok(results);
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(ex.Message);
+        }
+    }
+
+
+    
 
     [HttpPost]
     public async Task<IResult> InsertPress(PressModel press, IPressData data)

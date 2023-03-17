@@ -14,6 +14,10 @@ public class PressData : IPressData
 
     public Task<IEnumerable<PressModel>> GetPresses() =>
         _db.LoadData<PressModel, dynamic>("presshare.spPress_GetAll", new { });
+    public Task<IEnumerable<PressModel>> GetPressesByGenre(string genre) =>
+        _db.LoadData<PressModel, dynamic>("presshare.spPress_GetAllByGenre", new { Genre=genre});
+    public Task<IEnumerable<PressModel>> GetPressByGenre(string genre, int limit) =>
+        _db.LoadData<PressModel, dynamic>("presshare.spPress_GetByGenre", new { Genre=genre, Limit=limit});
 
     public async Task<PressModel?> GetPress(int id)
     {
@@ -22,6 +26,10 @@ public class PressData : IPressData
             new { Id = id });
         return results.FirstOrDefault();
     }
+
+   
+
+    
 
     public Task InsertPress(PressModel press) =>
         _db.SaveData("presshare.spPress_Insert", new { press.title, press.content, press.genre, press.author_id });
