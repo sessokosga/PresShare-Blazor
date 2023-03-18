@@ -15,10 +15,11 @@ public class PressData : IPressData
     public Task<IEnumerable<PressModel>> GetPresses() =>
         _db.LoadData<PressModel, dynamic>("presshare.spPress_GetAll", new { });
     public Task<IEnumerable<PressModel>> GetPressesByGenre(string genre) =>
-        _db.LoadData<PressModel, dynamic>("presshare.spPress_GetAllByGenre", new { Genre=genre});
+        _db.LoadData<PressModel, dynamic>("presshare.spPress_GetAllByGenre", new { Genre = genre });
     public Task<IEnumerable<PressModel>> GetPressByGenre(string genre, int limit) =>
-        _db.LoadData<PressModel, dynamic>("presshare.spPress_GetByGenre", new { Genre=genre, Limit=limit});
-
+        _db.LoadData<PressModel, dynamic>("presshare.spPress_GetByGenre", new { Genre = genre, Limit = limit });
+public Task<IEnumerable<PressModel>> GetLatest(int limit)=>
+        _db.LoadData<PressModel, dynamic>("presshare.spPress_GetLatest", new { Limit = limit });
     public async Task<PressModel?> GetPress(int id)
     {
         var results = await _db.LoadData<PressModel, dynamic>(
@@ -27,15 +28,11 @@ public class PressData : IPressData
         return results.FirstOrDefault();
     }
 
-   
-
-    
-
     public Task InsertPress(PressModel press) =>
         _db.SaveData("presshare.spPress_Insert", new { press.title, press.content, press.genre, press.author_id });
 
     public Task UpdatePress(PressModel press) =>
-        _db.SaveData("presshare.spPress_Update", new {press.id,press.title,press.content, press.genre});
+        _db.SaveData("presshare.spPress_Update", new { press.id, press.title, press.content, press.genre });
 
     public Task DeletePress(int id) =>
         _db.SaveData("presshare.spPress_Delete", new { Id = id });

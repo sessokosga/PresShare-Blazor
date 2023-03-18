@@ -12,5 +12,6 @@ public interface IPressData
     public Task<IEnumerable<PressModel>> GetPressesByGenre(string genre);
 
     public Task<IEnumerable<PressModel>> GetPressByGenre(string genre, int limit);
+    public Task<IEnumerable<PressModel>> GetLatest(int limit);
 
 }
