@@ -1,0 +1,29 @@
+@page "/press/links"
+
+@using PresShare.Website.Api
+@using PresShare.DataModel.Lib
+
+@inject PressProcessor pressProcess
+
+<h2>Links </h2>
+@if (count != null){
+    @if(count>1){
+        <h3> @count presses founds</h3>
+    }else
+    {
+        <h3> @count press found</h3>
+    }
+}
+
+<RenderPressFragment presses="@linkPresses" />
+@code {
+    private int? count=null;
+    private IEnumerable<PressModel>? linkPresses;
+    protected override async Task OnInitializedAsync()
+    {
+        linkPresses = await pressProcess.LoadPressesByGenre("Link");
+        count = linkPresses.Count();
+    }
+}
+
+

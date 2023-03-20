@@ -5,23 +5,22 @@
 @inject PressProcessor pressProcess
 
 <h2>Last press</h2>
-
+<RenderPressFragment presses="@latestPresses" />
 <h2>Texts <a class="button" href="press/texts">More <img class="svg" src="svg/arrow-right.svg" alt="More"></a></h2>
 <RenderPressFragment presses="@textPresses" />
 
 <h2>Links <a class="button" href="press/links">More <img class="svg" src="svg/arrow-right.svg" alt="More"></a></h2>
 <RenderPressFragment presses="@linkPresses" />
 @code {
-    private PressModel? press;
     private IEnumerable<PressModel>? textPresses;
     private IEnumerable<PressModel>? linkPresses;
-    private List<PressModel>? textPressList;
+    private IEnumerable<PressModel>? latestPresses;
     protected override async Task OnInitializedAsync()
     {
         textPresses = await pressProcess.LoadPressesByGenre("Text", 6);
         linkPresses = await pressProcess.LoadPressesByGenre("Link", 6);
-        @* textPressList=textPresses.ToList<PressModel>(); *@
-    }    
+        latestPresses = await pressProcess.LoadLatest(6);
+    }
 }
 
 

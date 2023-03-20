@@ -11,16 +11,18 @@
         {
             <div class="press @press.genre.ToLower() ">
                 <b> @press.title </b>
-                <br><small>@press.created_at</small>
-                <a class="genre" href="press/{@press.genre.ToLower()}s">@press.genre.ToLower()</a>
+                <br><small>@press.created_at.ToShortDateString()</small>
+                <a class="genre" href="press/@press.genre.ToLower()s">@press.genre.ToLower()</a>
                 @if (press.genre == "Link")
                 {
-                    <a href="@press.content">@press.content</a>
-                    <br />
+                    <p>
+                    <a href="@press.content.Replace("\n", "<br>")">@press.content.Replace("\n", "<br>")</a>
+                    </p>
                 }
                 else
                 {
-                    <p>@press.content</p>
+                    <p>  @press.content.Replace("\n", "<br>")</p>
+                    
                 }
     </div>
 ;
