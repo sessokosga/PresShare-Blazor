@@ -10,6 +10,7 @@ public interface IPressData
     Task InsertPress(PressModel press);
     Task UpdatePress(PressModel press);
     public Task<IEnumerable<PressModel>> GetPressesByGenre(string genre);
+    public Task<IEnumerable<PressModel>> FindPress(string key);
 
     public Task<IEnumerable<PressModel>> GetPressByGenre(string genre, int limit);
     public Task<IEnumerable<PressModel>> GetLatest(int limit);

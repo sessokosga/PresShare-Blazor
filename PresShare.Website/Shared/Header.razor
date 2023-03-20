@@ -1,10 +1,11 @@
+@inject NavigationManager NavManager
 <header>
     <h1 class="logo"><a href="">
             <img id="logo-share" src="svg/share-alt.svg" class="svg" alt="logo">
             <img id="logo-clipboard" class="svg" src="svg/clipboard.svg" alt="logo">PressShare</a></h1>
-    <form class="form-search" method="get" action="press/search/">
-        <input class="q-search" name="q" type="search" placeholder="Search a Press">
-        <button class="btn-search" type="submit"><img class="svg" src="svg/search.svg"
+    <form class="form-search" action="" method="get">
+        <input class="q-search" @bind-value="@key" name="key" type="search" placeholder="Search a Press">
+        <button class="btn-search" type="submit" @onclick="@Search"><img class="svg" src="svg/search.svg"
                 alt="Search"></button>
     </form>
     <ul class="menu">
@@ -12,3 +13,14 @@
         <li><a href="<?= ROOT_URL . 'users/signup' ?>">Sign up</a></li>
     </ul>
 </header>
+
+
+
+@code {
+    private string key;
+
+    public void Search()
+    {
+        NavManager.NavigateTo($"/press/find/{key}",true);
+    }
+}

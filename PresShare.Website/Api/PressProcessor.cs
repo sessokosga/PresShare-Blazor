@@ -65,6 +65,22 @@ public class PressProcessor
                 throw new Exception(response.ReasonPhrase);
             }
         }
+    }public async Task<IEnumerable<PressModel>> Find(string key)
+    {
+        string url = $"https://localhost:7244/press/find/{key}";
+
+        using (HttpResponseMessage response = await ApiHelper.AppClient.GetAsync(url))
+        {
+            if (response.IsSuccessStatusCode)
+            {
+                IEnumerable<PressModel> press = await response.Content.ReadAsAsync<IEnumerable<PressModel>>();
+                return press;
+            }
+            else
+            {
+                throw new Exception(response.ReasonPhrase);
+            }
+        }
     }
 
     public async Task<IEnumerable<PressModel>> LoadLatest(int limit)

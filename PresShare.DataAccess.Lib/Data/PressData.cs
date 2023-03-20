@@ -16,6 +16,11 @@ public class PressData : IPressData
         _db.LoadData<PressModel, dynamic>("presshare.spPress_GetAll", new { });
     public Task<IEnumerable<PressModel>> GetPressesByGenre(string genre) =>
         _db.LoadData<PressModel, dynamic>("presshare.spPress_GetAllByGenre", new { Genre = genre });
+
+        public Task<IEnumerable<PressModel>> FindPress(string key) =>
+        _db.LoadData<PressModel, dynamic>("presshare.spPress_Find", new { Key=key });
+
+        
     public Task<IEnumerable<PressModel>> GetPressByGenre(string genre, int limit) =>
         _db.LoadData<PressModel, dynamic>("presshare.spPress_GetByGenre", new { Genre = genre, Limit = limit });
 public Task<IEnumerable<PressModel>> GetLatest(int limit)=>

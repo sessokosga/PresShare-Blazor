@@ -42,6 +42,24 @@ public class PressController : ControllerBase
         }
     }
 
+    [HttpGet("find/{key}")]
+    public async Task<IResult> Find(IPressData data, string key)
+    {
+        try
+        {
+            var results = await data.FindPress(key);
+            if (results == null)
+                return Results.NotFound();
+            return Results.Ok(results);
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(ex.Message);
+        }
+    }
+
+    
+
     [HttpGet("{id}")]
     public async Task<IResult> GetPress(IPressData data, int id)
     {

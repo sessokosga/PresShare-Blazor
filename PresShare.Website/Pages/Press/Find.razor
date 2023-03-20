@@ -1,0 +1,49 @@
+@page "/press/find/{key}"
+
+@using PresShare.Website.Api
+@using PresShare.DataModel.Lib
+
+@inject PressProcessor pressProcess
+
+@if (key == null || key.Trim().Length<=0)
+{
+    <h3>Please provide a keyword</h3>
+}
+else
+{ 
+    <h2>Search result for "@key" </h2>
+    @if (count != null)
+    {
+        @if (count > 1)
+        {
+            <h3> @count presses founds</h3>
+        }
+        else if (count == 1)
+        {
+            <h3> @count press found</h3>
+        }
+        else
+        {
+            <h3> No press found</h3>
+        }
+    }
+
+    <RenderPressFragment presses="@foundPresses" />
+}
+
+@code {
+    [Parameter]
+    public string? key { get; set; }
+    private int? count = null;
+    private IEnumerable<PressModel>? foundPresses=null;
+    protected override async Task OnInitializedAsync()
+    {
+        if (key != null)
+        {            
+            foundPresses = await pressProcess.Find(key);
+            count = foundPresses.Count();
+        }
+    }
+}
+
+

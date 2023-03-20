@@ -7,8 +7,11 @@
     }
     else
     {
-        @foreach (var press in presses)
+        @foreach (PressModel press in presses)
         {
+            @code{
+                
+            }
             <div class="press @press.genre.ToLower() ">
                 <b> @press.title </b>
                 <br><small>@press.created_at.ToShortDateString()</small>
@@ -16,12 +19,12 @@
                 @if (press.genre == "Link")
                 {
                     <p>
-                    <a href="@press.content.Replace("\n", "<br>")">@press.content.Replace("\n", "<br>")</a>
+                    <a href="@((MarkupString) press.content.Replace("\n", "<br>")) ">@((MarkupString) press.content.Replace("\n", "<br>"))</a>
                     </p>
                 }
                 else
                 {
-                    <p>  @press.content.Replace("\n", "<br>")</p>
+                    <p> @((MarkupString) press.content.Replace("\n", "<br>"))</p>
                     
                 }
     </div>
@@ -31,6 +34,5 @@
 </div> 
 @code {
     [Parameter]
-    public IEnumerable<PressModel>? presses { get; set; }        
-    
+    public IEnumerable<PressModel>? presses { get; set; }
 }
