@@ -2,6 +2,7 @@
 @using PresShare.Website.Api
 
 @inject PressProcessor pressProcess
+@inject NavigationManager NavManager
 
 <div class="parent-press ">
     @if (presses == null)
@@ -12,15 +13,15 @@
     {
         @foreach (PressModel press in presses)
         {
-            if (Delequeue.Contains(press.id)){
-                <p>Deleting...</p>
-            }else{
-                <div class="press @press.genre.ToLower() ">
+            <div class="press @press.genre.ToLower() ">
+                @if (Delequeue.Contains(press.id)){
+                    <p>Deleting...</p>
+                }else{
                     <b> @press.title</b>
                     @if(canEdit){
                         <a class="edit" href= "press/update/@press.id" title= "Editer "><img src= "svg/edit.svg" alt= "Editer "></a>
                         var id = press.id;
-                        <a href= "press/delete/@press.id" @onclick:preventDefault @onclick="@( ()=>Delete(press.id) )" type="button" title= "Supprimer" ><img src= "svg/trash-alt.svg" alt= "Supprimer "></a>
+                        <a href= "#" @onclick:preventDefault @onclick="@( ()=>Delete(press) )" type="button" title= "Supprimer" ><img src= "svg/trash-alt.svg" alt= "Supprimer "></a>
                     }
 
 
@@ -35,11 +36,9 @@
                     else
                     {
                         <p> @((MarkupString) press.content.Replace("\n", "<br>"))</p>
-                        
                     }
-                </div>
-            }
-;
+                }
+            </div>
         }
     }
 </div> 
@@ -47,14 +46,20 @@
     [Parameter]
     public List<PressModel>? presses { get; set; }
     private bool canEdit = true;
-    private int deleteID;
     private List<int> Delequeue = new List<int>();
     
+    private List<Task<int>> DeleteTasks = new List<Task<int>>();
 
-    public async void Delete(int id){
-            Delequeue.Add(id);
-        if(await pressProcess.DeletePress(id) == true){
-            presses.RemoveAt(id);
+    public async void Delete(PressModel p){
+            Delequeue.Add(p.id);
+        DeleteTasks.Add(pressProcess.DeletePress(p.id));
+        while(DeleteTasks.Any()){
+            Task<int> finishedTask = await Task.WhenAny(DeleteTasks);
+            DeleteTasks.Remove(finishedTask);
+            var id = await finishedTask;
+            if (id>0){                
+                NavManager.NavigateTo(NavManager.Uri,true);
+            }
         }
     }
 }

@@ -136,7 +136,7 @@ public class PressProcessor
     }
 
     
-    public async Task<bool> DeletePress(int id)
+    public async Task<int> DeletePress(int id)
     {
         string url = $"https://localhost:7244/press/{id}";
         
@@ -145,7 +145,7 @@ public class PressProcessor
         {
             if (response.IsSuccessStatusCode)
             {
-                return true;
+                return id;
             }
             else
             {
