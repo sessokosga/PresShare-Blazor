@@ -1,12 +1,14 @@
 ﻿@inherits LayoutComponentBase
-
+@inject NavigationManager NavManager
 <PageTitle>PresShare.Website</PageTitle>
 
 <div class="page">
     <Header />
 
     <main class="container">
-        <a class="button" href="<?= ROOT_URL ?>press/add">Add a press</a>
+        @if(!NavManager.Uri.Contains("login") && !NavManager.Uri.Contains("signup")){
+            <a class="button" href="press/add">Add a press</a>
+        }
         @Body
     </main>
 

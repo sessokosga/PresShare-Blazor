@@ -18,10 +18,10 @@
 <RenderPressFragment presses="@linkPresses" />
 @code {
     private int? count=null;
-    private IEnumerable<PressModel>? linkPresses;
+    private List<PressModel>? linkPresses;
     protected override async Task OnInitializedAsync()
     {
-        linkPresses = await pressProcess.LoadPressesByGenre("Link");
+        linkPresses =(List<PressModel>) await pressProcess.LoadPressesByGenre("Link");
         count = linkPresses.Count();
     }
 }

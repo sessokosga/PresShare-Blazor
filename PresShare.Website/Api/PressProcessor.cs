@@ -1,5 +1,7 @@
 namespace PresShare.Website.Api;
 using PresShare.DataModel.Lib;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 public class PressProcessor
 {
 
@@ -93,6 +95,40 @@ public class PressProcessor
             {
                 IEnumerable<PressModel> press = await response.Content.ReadAsAsync<IEnumerable<PressModel>>();
                 return press;
+            }
+            else
+            {
+                throw new Exception(response.ReasonPhrase);
+            }
+        }
+    }
+
+  public async Task<bool> Update(PressModel press)
+    {
+        string url =  "https://localhost:7244/press";
+
+        using (HttpResponseMessage response = await ApiHelper.AppClient.PutAsJsonAsync<PressModel>(url,press))
+        {
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                throw new Exception(response.ReasonPhrase);
+            }
+        }
+    }
+    public async Task<bool> DeletePress(int id)
+    {
+        string url = $"https://localhost:7244/press/delete/{id}";
+        
+
+        using (HttpResponseMessage response = await ApiHelper.AppClient.DeleteAsync(url))
+        {
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
             }
             else
             {

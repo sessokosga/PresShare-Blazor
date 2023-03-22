@@ -1,0 +1,16 @@
+@page "/authors/login"
+<h2 class="center">Log in</h2>
+<form class="form" action="" method="post">
+    <label for="pseudo">Pseudo or email:</label>
+    <input type="text" required name="pseudo" placeholder="Ex: senor16" value="">
+    <br>
+    <label for="password">Password <small>(<a href="authors/restore">forgot password</a>)</small>:</label>
+    <input type="password" required name="password" placeholder="yourpassword">
+    <br>
+    <label for="remember">
+        <input type="checkbox" name="remember" id="remember" value="1">
+        Remember me</label>
+
+    <input class="del-add" type="reset" value="Reset">
+    <input class="del-add" type="submit" required name="login" value="Log in">
+</form>

@@ -35,12 +35,12 @@ else
     [Parameter]
     public string? key { get; set; }
     private int? count = null;
-    private IEnumerable<PressModel>? foundPresses=null;
+    private List<PressModel>? foundPresses=null;
     protected override async Task OnInitializedAsync()
     {
         if (key != null)
         {            
-            foundPresses = await pressProcess.Find(key);
+            foundPresses =(List<PressModel>) await pressProcess.Find(key);
             count = foundPresses.Count();
         }
     }

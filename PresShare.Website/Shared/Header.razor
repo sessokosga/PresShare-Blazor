@@ -9,8 +9,8 @@
                 alt="Search"></button>
     </form>
     <ul class="menu">
-        <li><a href="<?= ROOT_URL . 'users/login' ?>">Log in</a></li>
-        <li><a href="<?= ROOT_URL . 'users/signup' ?>">Sign up</a></li>
+        <li><a href="authors/login">Log in</a></li>
+        <li><a href="authors/signup">Sign up</a></li>
     </ul>
 </header>
 
@@ -18,7 +18,7 @@
 
 @code {
     private string key;
-
+    private bool? canAddPress=true;
     public void Search()
     {
         NavManager.NavigateTo($"/press/find/{key}",true);
