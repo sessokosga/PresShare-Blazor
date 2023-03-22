@@ -1,4 +1,4 @@
-@page "/press/update/{id:int}"
+@page "/press/add"
 
 @using PresShare.Website.Api
 @using PresShare.DataModel.Lib
@@ -6,9 +6,9 @@
 @inject PressProcessor pressProcess
 @inject NavigationManager NavManager
 
-@if (saving)
+@if (adding)
 {
-    <p>Saving...</p>
+    <p>Addind...</p>
 }
 else
 {
@@ -19,7 +19,7 @@ else
     else
     {
         <div id="add-press" class="add-press">
-            <h2>Edit a Press </h2>
+            <h2>Add a Press </h2>        
             <EditForm class="form-press" Model="@press" OnValidSubmit="@Save">
                 <div class="form-press-left">
                     <InputText id="title" minlength="1" maxlength="25" required placeholder="" type="text" @bind-Value="@press.title"></InputText>
@@ -44,13 +44,17 @@ else
     private PressModel? press = null;
     protected override async Task OnInitializedAsync()
     {
-        press = await pressProcess.LoadPress(id);
+        press = new PressModel();
+        press.author_id=30;
+        press.genre="Text";
     }
-    private bool saving = false;
+    private bool adding = false;
+
     private async Task Save()
-    {   
-        saving = true;
-         if(await pressProcess.Update(press)){
+    {
+        adding = true;
+        press.content = press.content.Trim();
+         if(await pressProcess.Add(press)){
             NavManager.NavigateTo("/");
         } 
     }

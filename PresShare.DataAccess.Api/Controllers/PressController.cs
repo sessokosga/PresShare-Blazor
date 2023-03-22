@@ -171,7 +171,7 @@ public class PressController : ControllerBase
     }
 
 
-    [HttpDelete("delete/{id}")]
+    [HttpDelete("{id}")]
     public async Task<IResult> DeletePress(IPressData data, int id)
     {
         try
