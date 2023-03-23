@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddTransient<PressProcessor>();
+builder.Services.AddTransient<AuthorProcessor>();
 ApiHelper.InitializeClient();
 
 var app = builder.Build();

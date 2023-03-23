@@ -1,0 +1,105 @@
+@page "/authors/signup"
+
+@using PresShare.Website.Api
+@using PresShare.DataModel.Lib
+
+@inject AuthorProcessor authProcess
+@inject NavigationManager NavManager
+<h2 class="center">Sign up</h2>
+@if (adding)
+{
+	<p>Adding author...</p>
+}
+
+	<EditForm class="form" Model="@author" OnValidSubmit="@Check">
+		<label for="pseudo">Pseudo <small>(20 caracters max)</small>:</label>
+		@if(Errors.ContainsKey("pseudo")){
+			<small class="form-error">@Errors["pseudo"]</small>
+		}
+		<InputText DisplayName="Pseudo <small>(20 caracters max)</small> :" type="text" required placeholder="Ex: senor16"
+		@bind-Value="@author.pseudo" />
+		<label for="email">Email:</label>
+		@if(Errors.ContainsKey("email")){
+			<small class="form-error">@Errors["email"]</small>
+		}		
+		<InputText DisplayName="Email :" type="email" required placeholder="Ex: senor16@gmail.com"
+		@bind-Value="@author.email" />
+		<label for="password">Password <small>(4 caraters min)</small>:</label>
+		<InputText type="password" required name="password" placeholder="yourpassword" @bind-Value="@author.password" />
+		<label for="password_confirm">Confirm password:</label>
+		@if(Errors.ContainsKey("password")){
+			<small class="form-error">@Errors["password"]</small>
+		}
+		<InputText type="password" required name="password" placeholder="yourpassword" @bind-Value="@passwordConfirm" />
+		<input class="del-add" type="reset" value="Reset">
+		<input class="del-add" type="submit" required name="login" value="Sign up">
+	</EditForm>	
+
+@code {
+	private AuthorModel? author;
+	private bool adding = false;
+	private int calledNumber=0;
+	private string passwordConfirm { get; set; }
+	private Dictionary<string, string> Errors = new Dictionary<string, string>();
+		private List<Task<AuthorModel>> Verifications = new List<Task<AuthorModel>>();
+	protected override async Task OnInitializedAsync()
+	{
+		author = new AuthorModel();
+	}
+
+	private async Task Check()
+	{
+		adding = true;
+		author.confirmation_token = "confirm123";
+		
+		if (author.password != passwordConfirm)
+		{
+			Errors["password"] = "The passwords don't match";
+		}else{
+			if(Errors.ContainsKey("password")){
+				Errors.Remove("password");
+			}
+			await Save();
+		}
+
+		try
+		{
+			if (await authProcess.GetAuthorByEmail(author.email) != null){
+				Errors["email"]="This email address isused by another account";
+			}
+		}
+		catch (System.Exception e)
+		{
+			if(Errors.ContainsKey("email")){
+				Errors.Remove("email");
+			}
+			await Save();
+		}
+
+
+		try
+		{
+			if (await authProcess.GetAuthorByPseudo(author.pseudo) != null){
+				Errors["pseudo"]="This pseudo is not available";
+			}
+		}
+		catch (System.Exception e)
+		{
+			if(Errors.ContainsKey("pseudo")){
+				Errors.Remove("pseudo");
+			}
+			await Save();
+		}		
+	}
+
+	public async Task Save(){
+		calledNumber++;
+		if(calledNumber>=3 && Errors.Count<=0)
+		{
+			if (await authProcess.Add(author))
+			{
+				NavManager.NavigateTo("/");
+			}
+		}
+	}
+}
