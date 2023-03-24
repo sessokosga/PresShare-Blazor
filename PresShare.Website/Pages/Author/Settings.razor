@@ -1,0 +1,289 @@
+@page "/authors/settings/{action?}"
+@using PresShare.Website.Api
+@using PresShare.DataModel.Lib
+
+@inject AuthorProcessor authProcess
+@inject NavigationManager NavManager
+
+<a href="authors/settings">
+	<h2 class="center">Settings</h2>
+</a>
+
+@if (action == null || action == "main")
+{
+	@ResetParams();
+	<ul class="settings">
+		<li>
+			<h4><a href="authors/settings/profile">Profile</a></h4>
+		</li>
+		<li>
+			<h4><a href="authors/settings/email">Update email</a></h4>
+		</li>
+		<li>
+			<h4><a href="authors/settings/password">Change password </a></h4>
+		</li>
+	</ul>
+}
+else
+{
+	if (@author == null)
+	{
+		<p>Loading...</p>
+	}
+	else
+	{
+		switch (action)
+		{
+			case "email":
+				<h3>Update email</h3>
+				@if (updating)
+				{
+					<p>Updating informations...</p>
+				}
+				@if(success){
+					<div class="alert success"> Email updated successfully </div>
+				}
+				<EditForm Model="@author" class="form" OnValidSubmit="@CheckEmail">
+					<label for="email">New Email:</label>
+					@if (Errors.ContainsKey("email"))
+					{
+						<small class="form-error">@Errors["email"]</small>
+					}
+					<InputText DisplayName="Email :" type="email" required placeholder="Ex: senor16@gmail.com"
+		@bind-Value="@newemail" />
+
+					<input class="del-add" type="reset" value="Reset">
+					<input class="del-add" type="submit" required name="email" value="Update">
+				</EditForm>
+
+				break;
+			case "profile":
+				<h3>Edit your profile</h3>
+				@if (updating)
+				{
+					<p>Updating informations...</p>
+				}
+				@if(success){
+					<div class="alert success"> Profile updated successfully </div>
+				}
+				<EditForm Model="@author" class="form" OnValidSubmit="@CheckProfile">
+					<label for="pseudo">Pseudo <small>(20 caracters max)</small>:</label>
+					@if (Errors.ContainsKey("pseudo"))
+					{
+						<small class="form-error">@Errors["pseudo"]</small>
+					}
+					<InputText DisplayName="Pseudo <small>(20 caracters max)</small> :" type="text" required placeholder="Ex: senor16"
+						@bind-Value="@newpseudo" />
+					
+					<label for="first_name">First name :</label>
+					@if (Errors.ContainsKey("first_name"))
+					{
+						<small class="form-error">@Errors["first_name"]</small>
+					}
+					<InputText DisplayName="First Name :" type="text" placeholder="Ex: Michée"
+						@bind-Value="@author.first_name" />
+					
+					<label for="last_name">Last name :</label>
+					@if (Errors.ContainsKey("last_name"))
+					{
+						<small class="form-error">@Errors["last_name"]</small>
+					}
+					<InputText DisplayName="First Name :" type="text" placeholder="Ex: Sesso Kosga Bamokaï"
+						@bind-Value="@author.last_name" />
+					
+					<input class="del-add" type="reset" value="Reset">
+					<input class="del-add" type="submit" required name="passworf" value="Save">
+				</EditForm>
+				break;
+
+			case "password":
+				<h3>Change password</h3>
+				@if (updating)
+				{
+					<p>Updating informations...</p>
+				}
+				@if(success){
+					<div class="alert success"> Password updated successfully </div>
+				}
+				<EditForm Model="@author" OnValidSubmit="@CheckPassword" class="form">
+					<label for="password">Current Password <small>(4 caraters min)</small>:</label>
+					@if (Errors.ContainsKey("curpassword"))
+					{
+						<small class="form-error">@Errors["curpassword"]</small>
+					}
+					<InputText type="password" name="password" aria-required="true" placeholder="currentpassword" @bind-Value="@curpassword" />
+
+					<label for="password">New Password <small>(4 caraters min)</small>:</label>
+					<InputText type="password" name="password" placeholder="newpassword" aria-required="true" @bind-Value="@newpassword" />
+					<label for="password_confirm">Confirm new password:</label>
+					@if (Errors.ContainsKey("newpassword"))
+					{
+						<small class="form-error">@Errors["newpassword"]</small>
+					}
+					<InputText type="password" name="password" placeholder="newpassword" aria-required="true" @bind-Value="@passwordConfirm" />
+
+					<input class="del-add" type="reset" value="Reset">
+					<input class="del-add" type="submit" required name="passworf" value="Save">
+				</EditForm>
+				break;
+		}
+	}
+}
+
+@code {
+	[Parameter]
+	public string? action { get; set; }
+	private AuthorModel? author;
+	private bool updating = false;
+	private int calledNumber = 0;
+	private string passwordConfirm { get; set; }
+	private string newpassword { get; set; }
+	private string curpassword { get; set; }
+	private string newemail { get; set; }
+	private string newpseudo { get; set; }
+	public bool success { get; set; }
+	private Dictionary<string, string> Errors = new Dictionary<string, string>();
+	private List<Task<AuthorModel>> Verifications = new List<Task<AuthorModel>>();
+	protected override async Task OnInitializedAsync()
+	{
+		if (action == null)
+		{
+			action = "main";
+		}
+		author = await authProcess.GetAuthor(39);
+	}
+
+	private async Task CheckEmail()
+	{
+		updating = true;
+		if (newemail!=author.email && await authProcess.CheckEmailExist(newemail) )
+			Errors["email"] = "This email address is used by another account";
+		else
+		{
+			if (Errors.ContainsKey("email"))
+			{
+				Errors.Remove("email");
+			}
+			author.email = newemail;
+			await Save();
+		}
+	}
+	private async Task CheckPassword()
+	{
+		updating = true;
+
+		if (curpassword != author.password)
+		{
+			Errors["curpassword"] = "Password incorrect";
+		}
+		else
+		{
+			if (Errors.ContainsKey("curpassword"))
+			{
+				Errors.Remove("curpassword");
+			}
+			author.password = newpassword;
+			await Save();
+		}
+		if (newpassword != passwordConfirm)
+		{
+			Errors["newpassword"] = "The passwords don't match";
+		}
+		else
+		{
+			if (Errors.ContainsKey("newpassword"))
+			{
+				Errors.Remove("newpassword");
+			}
+			await Save();
+		}
+	}
+	private async Task CheckProfile()
+	{
+		updating = true;
+
+		if (newpseudo!=author.pseudo && await authProcess.CheckPseudoExist(newpseudo) )
+			Errors["pseudo"] = "This pseudo is not available";
+		else
+		{
+			
+			if (Errors.ContainsKey("pseudo"))
+			{
+				Errors.Remove("pseudo");
+			}
+			author.pseudo=newpseudo;
+			await Save();
+		}
+
+		@* Check First Name *@
+			await Save();
+@* Check Last Name *@
+			await Save();
+
+
+		
+	}
+	public async Task Save()
+	{
+		calledNumber++;
+		switch (action)
+		{
+			case "password":
+				if (calledNumber >= 2 && Errors.Count <= 0)
+				{
+					if (await authProcess.Update(author))
+					{
+						success=true;
+						updating=false;
+						author = await authProcess.GetAuthor(39);	
+						ResetParams();
+						@* NavManager.NavigateTo("/authors/settings/password", true); *@
+					}
+				}
+				break;
+			case "profile":
+				if (calledNumber >= 3 && Errors.Count <= 0)
+				{
+					if (await authProcess.Update(author))
+					{
+						success=true;
+						updating=false;
+						author = await authProcess.GetAuthor(39);
+						ResetParams();
+						@* NavManager.NavigateTo("/authors/settings/profile", true); *@
+					}
+				}
+				break;
+			case "email":
+				if (calledNumber >= 1 && Errors.Count <= 0)
+				{
+					if (await authProcess.Update(author))
+					{
+						success=true;
+						updating=false;
+						author = await authProcess.GetAuthor(39);
+						ResetParams();
+						@* NavManager.NavigateTo("/authors/settings/email", true); *@
+					}
+				}
+				break;
+		}
+
+	}
+
+	private string ResetParams(){
+		success=false;
+						updating=false;
+		calledNumber = 0;
+	passwordConfirm ="";
+	newpassword ="";
+	curpassword ="";
+	newemail ="";
+	newpseudo =author.pseudo;
+	Errors.Clear();
+	
+		newpseudo=author.pseudo;
+		return "";
+	}
+}
+

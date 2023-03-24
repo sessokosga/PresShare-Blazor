@@ -1,8 +1,9 @@
 namespace PresShare.Website.Api;
 using PresShare.DataModel.Lib;
-public class AuthorProcessor{
+public class AuthorProcessor
+{
 
-     public async Task<AuthorModel> GetAuthor(int id)
+    public async Task<AuthorModel> GetAuthor(int id)
     {
         string url = $"https://localhost:7244/authors/{id}";
 
@@ -20,7 +21,7 @@ public class AuthorProcessor{
         }
     }
 
-     public async Task<AuthorModel> GetAuthorByPseudo(string pseudo)
+    public async Task<AuthorModel> GetAuthorByPseudo(string pseudo)
     {
         string url = $"https://localhost:7244/authors/pseudo/{pseudo}";
 
@@ -38,9 +39,9 @@ public class AuthorProcessor{
         }
     }
 
-    
 
-     public async Task<AuthorModel> GetAuthorByEmail(string email)
+
+    public async Task<AuthorModel> GetAuthorByEmail(string email)
     {
         string url = $"https://localhost:7244/authors/email/{email}";
 
@@ -58,12 +59,58 @@ public class AuthorProcessor{
         }
     }
 
-    
-public async Task<bool> Add(AuthorModel author)
+
+    public async Task<bool> Add(AuthorModel author)
+    {
+        string url = "https://localhost:7244/authors";
+
+        using (HttpResponseMessage response = await ApiHelper.AppClient.PostAsJsonAsync<AuthorModel>(url, author))
+        {
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                throw new Exception(response.ReasonPhrase);
+            }
+        }
+    }
+
+
+    public async Task<bool> CheckEmailExist(string email)
+    {
+        bool exist = true;
+        try
+        {
+            await GetAuthorByEmail(email);
+        }
+        catch (System.Exception e)
+        {
+            exist= false;
+        }
+        return exist;
+    }
+
+    public async Task<bool> CheckPseudoExist(string pseudo)
+    {
+        bool exist = true;
+        try
+        {
+            await this.GetAuthorByPseudo(pseudo);
+        }
+        catch (System.Exception e)
+        {
+            exist = false;
+        }
+        return exist;
+    }
+
+public async Task<bool> Update(AuthorModel press)
     {
         string url =  "https://localhost:7244/authors";
 
-        using (HttpResponseMessage response = await ApiHelper.AppClient.PostAsJsonAsync<AuthorModel>(url,author))
+        using (HttpResponseMessage response = await ApiHelper.AppClient.PutAsJsonAsync<AuthorModel>(url,press))
         {
             if (response.IsSuccessStatusCode)
             {

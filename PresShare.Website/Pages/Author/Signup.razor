@@ -24,6 +24,7 @@
 		}		
 		<InputText DisplayName="Email :" type="email" required placeholder="Ex: senor16@gmail.com"
 		@bind-Value="@author.email" />
+
 		<label for="password">Password <small>(4 caraters min)</small>:</label>
 		<InputText type="password" required name="password" placeholder="yourpassword" @bind-Value="@author.password" />
 		<label for="password_confirm">Confirm password:</label>
@@ -62,13 +63,9 @@
 			await Save();
 		}
 
-		try
-		{
-			if (await authProcess.GetAuthorByEmail(author.email) != null){
-				Errors["email"]="This email address isused by another account";
-			}
-		}
-		catch (System.Exception e)
+		if(await authProcess.CheckEmailExist(author.email))
+			Errors["email"]="This email address is used by another account";
+		else
 		{
 			if(Errors.ContainsKey("email")){
 				Errors.Remove("email");
@@ -77,13 +74,9 @@
 		}
 
 
-		try
-		{
-			if (await authProcess.GetAuthorByPseudo(author.pseudo) != null){
+		if(await authProcess.CheckPseudoExist(author.pseudo))
 				Errors["pseudo"]="This pseudo is not available";
-			}
-		}
-		catch (System.Exception e)
+		else
 		{
 			if(Errors.ContainsKey("pseudo")){
 				Errors.Remove("pseudo");
