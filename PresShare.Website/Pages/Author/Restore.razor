@@ -1,0 +1,39 @@
+@page "/authors/restore"
+
+@using PresShare.Website.Api
+@using PresShare.DataModel.Lib
+
+@inject AuthorProcessor authProcess
+@inject NavigationManager NavManager
+
+<h2 class="center">Reset password</h2>
+
+@if(failure){
+    <small class="form-error">Enter a valid email adress</small>
+}
+
+<EditForm class="form" Model="@author" OnValidSubmit="@Check">
+    <label for="email">Email:</label>
+    <InputText DisplayName="Email :" type="email" required placeholder="Ex: senor16@gmail.com"
+    @bind-Value="@author.email" />
+
+    <input class="del-add" type="reset" value="Reset">
+    <input class="del-add" type="submit" required name="login" value="Log in">
+</EditForm>
+
+
+@code {
+	private AuthorModel? author;
+	private bool failure=false;
+    
+	protected override async Task OnInitializedAsync()
+	{
+        author = new AuthorModel();
+	}
+
+	private async Task Check()
+	{
+        failure=true;
+    }
+
+}

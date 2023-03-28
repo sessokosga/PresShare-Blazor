@@ -1,16 +1,53 @@
 @page "/authors/login"
+
+@using PresShare.Website.Api
+@using PresShare.DataModel.Lib
+
+@inject AuthorProcessor authProcess
+@inject NavigationManager NavManager
+
 <h2 class="center">Log in</h2>
-<form class="form" action="" method="post">
+@if (adding)
+{
+	<p>Checking credentials...</p>
+}
+@if(failure){
+    <small class="form-error">Wrong credentials</small>
+}
+
+<EditForm class="form" Model="@author" OnValidSubmit="@Check">
     <label for="pseudo">Pseudo or email:</label>
-    <input type="text" required name="pseudo" placeholder="Ex: senor16" value="">
+		<InputText DisplayName="Pseudo <small>(20 caracters max)</small> :" type="text" required placeholder="Ex: senor16"
+		@bind-Value="@author.pseudo" id="pseudo"/>
     <br>
     <label for="password">Password <small>(<a href="authors/restore">forgot password</a>)</small>:</label>
-    <input type="password" required name="password" placeholder="yourpassword">
-    <br>
+    <InputText type="password" required id="password" placeholder="yourpassword" @bind-Value="@author.password" />
     <label for="remember">
-        <input type="checkbox" name="remember" id="remember" value="1">
-        Remember me</label>
-
+    <InputCheckbox @bind-Value="@remember" id="remember"/>
+Remember me</label>
     <input class="del-add" type="reset" value="Reset">
-    <input class="del-add" type="submit" required name="login" value="Log in">
-</form>
+    <input class="del-add" type="submit" required id="login" value="Log in">
+</EditForm>
+
+
+@code {
+	private AuthorModel? author;
+	private bool adding = false;
+	private bool failure=false;
+	private bool remember=false;
+
+    
+	private int calledNumber=0;
+	private List<Task<AuthorModel>> Verifications = new List<Task<AuthorModel>>();
+	protected override async Task OnInitializedAsync()
+	{
+		author = new AuthorModel();
+	}
+
+	private async Task Check()
+	{
+		adding = true;
+        failure=true;
+    }
+
+}

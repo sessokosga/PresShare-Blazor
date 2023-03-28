@@ -1,0 +1,89 @@
+@page "/authors/renew"
+
+@using PresShare.Website.Api
+@using PresShare.DataModel.Lib
+
+@inject AuthorProcessor authProcess
+@inject NavigationManager NavManager
+
+<h2 class="center">Set new password</h2>
+
+<EditForm Model="@author" class="form" OnValidSubmit="@CheckPassword">
+
+    <label for="password">New Password <small>(4 caraters min)</small>:</label>
+    <InputText type="password" name="password" placeholder="newpassword" aria-required="true"
+        @bind-Value="@newpassword" />
+    <label for="password_confirm">Confirm new password:</label>
+    @if (Errors.ContainsKey("newpassword"))
+    {
+        <small class="form-error">@Errors["newpassword"]</small>
+    }
+    <InputText type="password" name="password" placeholder="newpassword" aria-required="true"
+        @bind-Value="@passwordConfirm" />
+
+    <input class="del-add" type="reset" value="Reset">
+    <input class="del-add" type="submit" required name="passworf" value="Save">
+</EditForm>
+
+@code {
+    private string passwordConfirm { get; set; }
+    private string newpassword { get; set; }
+    private bool success { get; set; }
+    private AuthorModel? author;
+
+
+    private Dictionary<string, string> Errors = new Dictionary<string, string>();
+    private bool updating = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        author = new AuthorModel();
+    }
+
+    private async Task CheckPassword()
+    {
+        updating = true;
+
+
+        if (newpassword != passwordConfirm)
+        {
+            Errors["newpassword"] = "The passwords don't match";
+        }
+        else
+        {
+            if (Errors.ContainsKey("newpassword"))
+            {
+                Errors.Remove("newpassword");
+            }
+            await Save();
+        }
+    }
+
+    public async Task Save()
+    {
+        if (Errors.Count <= 0)
+        {
+            if (await authProcess.Update(author))
+            {
+                success = true;
+                updating = false;
+                author = await authProcess.GetAuthor(39);
+                ResetParams();
+                @* NavManager.NavigateTo("/authors/settings/password", true); *@
+            }
+        }
+
+    }
+
+    private string ResetParams()
+    {
+        success = false;
+        updating = false;
+        calledNumber = 0;
+        passwordConfirm = "";
+        newpassword = "";
+        Errors.Clear();
+
+        return "";
+    }
+}
