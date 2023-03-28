@@ -1,11 +1,13 @@
 @page "/authors/signup"
 
 @using PresShare.Website.Api
+@using PresShare.Website.Data
 @using PresShare.DataModel.Lib
 
 @inject AuthorProcessor authProcess
 @inject NavigationManager NavManager
 <h2 class="center">Sign up</h2>
+<h3>@Utils.RandomString(60)</h3>
 @if (adding)
 {
 	<p>Adding author...</p>
@@ -51,7 +53,7 @@
 	private async Task Check()
 	{
 		adding = true;
-		author.confirmation_token = "confirm123";
+		author.confirmation_token = Utils.RandomString(60);
 		
 		if (author.password != passwordConfirm)
 		{

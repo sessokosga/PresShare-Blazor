@@ -1,4 +1,4 @@
-namespace PresShare.Website.Api;
+namespace PresShare.Website.Data;
 public static class Utils{
     private static Random rand = new Random();
 
