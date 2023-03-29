@@ -1,4 +1,8 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace PresShare.DataAccess.Api.Controllers;
 
@@ -74,9 +78,80 @@ public class AuthorsController : ControllerBase
         }
     }
 
-    
 
-    
+    [Route("/token")]
+    [HttpPost]
+    public async Task<IResult> Login(AuthorModel author, IAuthorData data)
+    {
+        try
+        {
+            var pseudo = await IsValidPseudoAndPassword(author.pseudo, author.password,data);
+            if (pseudo != null)
+            {
+
+                return Results.Ok(await GenerateToken(pseudo,data));
+            }
+            else
+            {
+                return Results.Ok();
+            }
+
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(ex.Message);
+        }
+    }
+
+    private async Task<dynamic> GenerateToken(string pseudo, IAuthorData data)
+    {
+        var author = await data.GetAuhtorByPseudo(pseudo);
+        var claims = new List<Claim>(){
+        new Claim(ClaimTypes.Name,pseudo),
+        new Claim(ClaimTypes.NameIdentifier,author.id.ToString()),
+        new Claim(JwtRegisteredClaimNames.Nbf,new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString()),
+        new Claim(JwtRegisteredClaimNames.Exp,new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString()),
+       };
+
+        var token = new JwtSecurityToken(
+         new JwtHeader(
+             new SigningCredentials(
+                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ThisIsMySecretKeyDonttell")),
+                 SecurityAlgorithms.HmacSha256)),
+                 new JwtPayload(claims));
+
+        var output = new {
+            Access_Token = new JwtSecurityTokenHandler().WriteToken(token),
+            Pseudo = pseudo
+        };
+
+        return output;
+
+    }
+    private async Task<string> IsValidPseudoAndPassword(string pseudo, string password, IAuthorData data)
+    {
+        var author = await data.GetAuhtorByPseudo(pseudo);
+        if (author == null)
+        {
+            var auth = await data.GetAuhtorByEmail(pseudo);
+            if (auth == null)
+                return null;
+            else
+            {
+                if( auth.password == password)
+                    return auth.pseudo;
+                else
+                    return null;
+            }
+        }
+        else
+        {
+            if( author.password == password)
+                return author.pseudo;
+            else
+                return null;
+        }
+    }
 
     [HttpPost]
     public async Task<IResult> InsertAuthor(AuthorModel author, IAuthorData data)
@@ -96,7 +171,7 @@ public class AuthorsController : ControllerBase
     public async Task<IResult> UpdateAuthor(AuthorModel author, IAuthorData data)
     {
         try
-        {            
+        {
             await data.UpdateAuthor(author);
             return Results.Ok();
         }

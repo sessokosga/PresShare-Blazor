@@ -1,0 +1,2 @@
+Microsoft.AspNetcore.Authentication.JwtBearer
+System.IdentityModel.Tokens.Jwt
