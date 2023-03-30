@@ -6,9 +6,14 @@
     <Header />
 
     <main class="container">
-        @if(!NavManager.Uri.Contains("login") && !NavManager.Uri.Contains("signup")){
-            <a class="button" href="press/add">Add a press</a>
-        }
+        <AuthorizeView>
+            <Authorized>
+                @if (!NavManager.Uri.Contains("login") && !NavManager.Uri.Contains("signup"))
+                {
+                    <a class="button" href="press/add">Add a press</a>
+                }
+            </Authorized>
+        </AuthorizeView>
         @Body
     </main>
 

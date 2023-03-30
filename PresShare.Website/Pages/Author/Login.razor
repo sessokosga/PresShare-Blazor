@@ -1,10 +1,8 @@
 @page "/authors/login"
 
-@using PresShare.Website.Api
-@using PresShare.DataModel.Lib
-
 @inject AuthorProcessor authProcess
 @inject NavigationManager NavManager
+@inject IMyAuthenticationService AuthService
 
 <h2 class="center">Log in</h2>
 @if (adding)
@@ -12,7 +10,7 @@
 	<p>Checking credentials...</p>
 }
 @if(failure){
-    <small class="form-error">Wrong credentials</small>
+    <small class="form-error">There was an error while loggin in</small>
 }
 
 <EditForm class="form" Model="@author" OnValidSubmit="@Check">
@@ -31,23 +29,28 @@ Remember me</label>
 
 
 @code {
-	private AuthorModel? author;
+	private AuthenticatinoAuthorModel? author;
 	private bool adding = false;
 	private bool failure=false;
 	private bool remember=false;
 
     
 	private int calledNumber=0;
-	private List<Task<AuthorModel>> Verifications = new List<Task<AuthorModel>>();
 	protected override async Task OnInitializedAsync()
 	{
-		author = new AuthorModel();
+		author = new AuthenticatinoAuthorModel();
 	}
 
 	private async Task Check()
 	{
 		adding = true;
-        failure=true;
+		var result = await AuthService.Login(author,remember);
+		if(result is not null){
+			NavManager.NavigateTo("/");
+		}else{
+        	failure=true;
+			adding=false;
+		}
     }
 
 }

@@ -18,7 +18,7 @@
                     <p>Deleting...</p>
                 }else{
                     <b> @press.title</b>
-                    @if(canEdit){
+                    @if(authorID == press.author_id.ToString()){
                         <a class="edit" href= "press/update/@press.id" title= "Editer "><img src= "svg/edit.svg" alt= "Editer "></a>
                         var id = press.id;
                         <a href= "#" @onclick:preventDefault @onclick="@( ()=>Delete(press) )" type="button" title= "Supprimer" ><img src= "svg/trash-alt.svg" alt= "Supprimer "></a>
@@ -45,7 +45,10 @@
 @code {
     [Parameter]
     public List<PressModel>? presses { get; set; }
-    private bool canEdit = true;
+        [CascadingParameter]
+        public Task<AuthenticationState> AuthState {get;set;}
+    private bool canEdit = false;
+    private string authorID="";
     private List<int> Delequeue = new List<int>();
     
     private List<Task<int>> DeleteTasks = new List<Task<int>>();
@@ -60,6 +63,14 @@
             if (id>0){                
                 NavManager.NavigateTo(NavManager.Uri,true);
             }
+        }
+    }
+
+    protected override async Task OnInitializedAsync(){
+        var authState = await AuthState;
+
+        if(authState.User.Identity.IsAuthenticated){
+            authorID = authState.User.FindFirst(ClaimTypes.NameIdentifier).Value;            
         }
     }
 }

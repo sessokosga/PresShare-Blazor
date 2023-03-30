@@ -1,0 +1,11 @@
+@page "/authors/logout"
+@inject NavigationManager NavManager
+@inject IMyAuthenticationService AuthService
+@attribute [Authorize]
+
+@code{
+	protected override async Task OnInitializedAsync()
+    {
+        await AuthService.Logout();
+    NavManager.NavigateTo("/");
+}}

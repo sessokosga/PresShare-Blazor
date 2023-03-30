@@ -8,19 +8,30 @@
         <button class="btn-search" type="submit" @onclick="@Search"><img class="svg" src="svg/search.svg"
                 alt="Search"></button>
     </form>
-    <ul class="menu">
-        <li><a href="authors/login">Log in</a></li>
-        <li><a href="authors/signup">Sign up</a></li>
-    </ul>
+    <AuthorizeView>
+        <Authorized>
+            <ul class="menu">
+                <li><a href="authors/logout">Log out</a></li>
+                <li><a href="authors/settings">Settings</a></li>
+            </ul>
+        </Authorized>
+        <NotAuthorized>
+            <ul class="menu">
+                <li><a href="authors/login">Log in</a></li>
+                <li><a href="authors/signup">Sign up</a></li>
+            </ul>
+
+        </NotAuthorized>
+    </AuthorizeView>
 </header>
 
 
 
 @code {
     private string key;
-    private bool? canAddPress=true;
+    private bool? canAddPress = true;
     public void Search()
     {
-        NavManager.NavigateTo($"/press/find/{key}",true);
+        NavManager.NavigateTo($"/press/find/{key}", true);
     }
 }

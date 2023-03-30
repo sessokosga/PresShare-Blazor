@@ -1,10 +1,8 @@
 @page "/press/update/{id:int}"
 
-@using PresShare.Website.Api
-@using PresShare.DataModel.Lib
-
 @inject PressProcessor pressProcess
 @inject NavigationManager NavManager
+@attribute [Authorize]
 
 @if (saving)
 {

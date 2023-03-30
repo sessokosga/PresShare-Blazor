@@ -15,4 +15,5 @@ public class AuthorModel
     public string? reset_token { get; set; }
     public DateTime? reset_at { get; set; }
     public string? remember_token { get; set; }
+    public string? access_token { get; set; }
 }

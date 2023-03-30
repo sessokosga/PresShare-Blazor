@@ -79,16 +79,14 @@ public class AuthorsController : ControllerBase
     }
 
 
-    [Route("/token")]
-    [HttpPost]
-    public async Task<IResult> Login(AuthorModel author, IAuthorData data)
+    [HttpPost("token")]
+    public async Task<IResult> Login(AuthenticatinoAuthorModel author, IAuthorData data)
     {
         try
         {
             var pseudo = await IsValidPseudoAndPassword(author.pseudo, author.password,data);
             if (pseudo != null)
             {
-
                 return Results.Ok(await GenerateToken(pseudo,data));
             }
             else
@@ -119,10 +117,10 @@ public class AuthorsController : ControllerBase
                  new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ThisIsMySecretKeyDonttell")),
                  SecurityAlgorithms.HmacSha256)),
                  new JwtPayload(claims));
-
+        
         var output = new {
-            Access_Token = new JwtSecurityTokenHandler().WriteToken(token),
-            Pseudo = pseudo
+            access_token = new JwtSecurityTokenHandler().WriteToken(token),
+            pseudo = pseudo
         };
 
         return output;
