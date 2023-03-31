@@ -9,7 +9,7 @@
 
 @if (action == null || action == "main")
 {
-	@ResetParams();
+	@ResetParams()
 	<ul class="settings">
 		<li>
 			<h4><a href="authors/settings/profile">Profile</a></h4>
@@ -38,7 +38,8 @@ else
 				{
 					<p>Updating informations...</p>
 				}
-				@if(success){
+				@if (success)
+				{
 					<div class="alert success"> Email updated successfully </div>
 				}
 				<EditForm Model="@author" class="form" OnValidSubmit="@CheckEmail">
@@ -61,7 +62,8 @@ else
 				{
 					<p>Updating informations...</p>
 				}
-				@if(success){
+				@if (success)
+				{
 					<div class="alert success"> Profile updated successfully </div>
 				}
 				<EditForm Model="@author" class="form" OnValidSubmit="@CheckProfile">
@@ -71,24 +73,23 @@ else
 						<small class="form-error">@Errors["pseudo"]</small>
 					}
 					<InputText DisplayName="Pseudo <small>(20 caracters max)</small> :" type="text" required placeholder="Ex: senor16"
-						@bind-Value="@newpseudo" />
-					
+		@bind-Value="@newpseudo" />
+
 					<label for="first_name">First name :</label>
 					@if (Errors.ContainsKey("first_name"))
 					{
 						<small class="form-error">@Errors["first_name"]</small>
 					}
-					<InputText DisplayName="First Name :" type="text" placeholder="Ex: Michée"
-						@bind-Value="@author.first_name" />
-					
+					<InputText DisplayName="First Name :" type="text" placeholder="Ex: Michée" @bind-Value="@author.first_name" />
+
 					<label for="last_name">Last name :</label>
 					@if (Errors.ContainsKey("last_name"))
 					{
 						<small class="form-error">@Errors["last_name"]</small>
 					}
 					<InputText DisplayName="First Name :" type="text" placeholder="Ex: Sesso Kosga Bamokaï"
-						@bind-Value="@author.last_name" />
-					
+		@bind-Value="@author.last_name" />
+
 					<input class="del-add" type="reset" value="Reset">
 					<input class="del-add" type="submit" required name="passworf" value="Save">
 				</EditForm>
@@ -100,7 +101,8 @@ else
 				{
 					<p>Updating informations...</p>
 				}
-				@if(success){
+				@if (success)
+				{
 					<div class="alert success"> Password updated successfully </div>
 				}
 				<EditForm Model="@author" OnValidSubmit="@CheckPassword" class="form">
@@ -109,16 +111,19 @@ else
 					{
 						<small class="form-error">@Errors["curpassword"]</small>
 					}
-					<InputText type="password" name="password" aria-required="true" placeholder="currentpassword" @bind-Value="@curpassword" />
+					<InputText type="password" name="password" aria-required="true" placeholder="currentpassword"
+		@bind-Value="@curpassword" />
 
 					<label for="password">New Password <small>(4 caraters min)</small>:</label>
-					<InputText type="password" name="password" placeholder="newpassword" aria-required="true" @bind-Value="@newpassword" />
+					<InputText type="password" name="password" placeholder="newpassword" aria-required="true"
+		@bind-Value="@newpassword" />
 					<label for="password_confirm">Confirm new password:</label>
 					@if (Errors.ContainsKey("newpassword"))
 					{
 						<small class="form-error">@Errors["newpassword"]</small>
 					}
-					<InputText type="password" name="password" placeholder="newpassword" aria-required="true" @bind-Value="@passwordConfirm" />
+					<InputText type="password" name="password" placeholder="newpassword" aria-required="true"
+		@bind-Value="@passwordConfirm" />
 
 					<input class="del-add" type="reset" value="Reset">
 					<input class="del-add" type="submit" required name="passworf" value="Save">
@@ -132,7 +137,7 @@ else
 	[Parameter]
 	public string? action { get; set; }
 	[CascadingParameter]
-        public Task<AuthenticationState> AuthState {get;set;}
+	public Task<AuthenticationState> AuthState { get; set; }
 	private AuthorModel? author;
 	private bool updating = false;
 	private int calledNumber = 0;
@@ -142,8 +147,10 @@ else
 	private string newemail { get; set; }
 	private string newpseudo { get; set; }
 	public bool success { get; set; }
+	private int authorID;
 	private Dictionary<string, string> Errors = new Dictionary<string, string>();
 	private List<Task<AuthorModel>> Verifications = new List<Task<AuthorModel>>();
+
 	protected override async Task OnInitializedAsync()
 	{
 		var authState = await AuthState;
@@ -151,18 +158,21 @@ else
 		{
 			action = "main";
 		}
-		if(authState.User.Identity.IsAuthenticated){
-		 var id  = int.Parse(authState.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-        author = await authProcess.GetAuthor(id);
-        }
-		
+		if (authState.User.Identity.IsAuthenticated)
+		{
+			authorID = int.Parse(authState.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+			author = await authProcess.GetAuthor(authorID);
+		}
+
 	}
 
 	private async Task CheckEmail()
 	{
 		updating = true;
-		if (newemail!=author.email && await authProcess.CheckEmailExist(newemail) )
+		if (newemail != author.email && await authProcess.CheckEmailExist(newemail)){
 			Errors["email"] = "This email address is used by another account";
+			updating = false;
+		}
 		else
 		{
 			if (Errors.ContainsKey("email"))
@@ -179,7 +189,8 @@ else
 
 		if (curpassword != author.password)
 		{
-			Errors["curpassword"] = "Password incorrect";
+			Errors["curpassword"] = "Incorrect password";
+			updating = false;
 		}
 		else
 		{
@@ -193,6 +204,7 @@ else
 		if (newpassword != passwordConfirm)
 		{
 			Errors["newpassword"] = "The passwords don't match";
+			updating = false;
 		}
 		else
 		{
@@ -207,26 +219,27 @@ else
 	{
 		updating = true;
 
-		if (newpseudo!=author.pseudo && await authProcess.CheckPseudoExist(newpseudo) )
+		if (newpseudo != author.pseudo && await authProcess.CheckPseudoExist(newpseudo)){
 			Errors["pseudo"] = "This pseudo is not available";
+			updating = false;
+		}
 		else
 		{
-			
 			if (Errors.ContainsKey("pseudo"))
 			{
 				Errors.Remove("pseudo");
 			}
-			author.pseudo=newpseudo;
+			author.pseudo = newpseudo;
 			await Save();
 		}
 
 		@* Check First Name *@
-			await Save();
-@* Check Last Name *@
-			await Save();
+		await Save();
+		@* Check Last Name *@
+		await Save();
 
 
-		
+
 	}
 	public async Task Save()
 	{
@@ -238,11 +251,9 @@ else
 				{
 					if (await authProcess.Update(author))
 					{
-						success=true;
-						updating=false;
-						author = await authProcess.GetAuthor(39);	
+						author = await authProcess.GetAuthor(authorID);
 						ResetParams();
-						@* NavManager.NavigateTo("/authors/settings/password", true); *@
+						success = true;
 					}
 				}
 				break;
@@ -251,11 +262,9 @@ else
 				{
 					if (await authProcess.Update(author))
 					{
-						success=true;
-						updating=false;
-						author = await authProcess.GetAuthor(39);
+						author = await authProcess.GetAuthor(authorID);
 						ResetParams();
-						@* NavManager.NavigateTo("/authors/settings/profile", true); *@
+						success = true;
 					}
 				}
 				break;
@@ -264,11 +273,9 @@ else
 				{
 					if (await authProcess.Update(author))
 					{
-						success=true;
-						updating=false;
-						author = await authProcess.GetAuthor(39);
+						author = await authProcess.GetAuthor(authorID);
 						ResetParams();
-						@* NavManager.NavigateTo("/authors/settings/email", true); *@
+						success = true;
 					}
 				}
 				break;
@@ -276,18 +283,17 @@ else
 
 	}
 
-	private string ResetParams(){
-		success=false;
-						updating=false;
+	private string ResetParams()
+	{
+		success = false;
+		updating = false;
 		calledNumber = 0;
-	passwordConfirm ="";
-	newpassword ="";
-	curpassword ="";
-	newemail ="";
-	newpseudo =author.pseudo;
-	Errors.Clear();
-	
-		newpseudo=author.pseudo;
+		passwordConfirm = "";
+		newpassword = "";
+		curpassword = "";
+		newemail = "";
+		newpseudo = author?.pseudo;
+		Errors.Clear();
 		return "";
 	}
 }

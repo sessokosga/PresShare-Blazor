@@ -39,10 +39,20 @@ else
 @code {
     [Parameter]
     public int id { get; set; }
+	private int authorID;
+    [CascadingParameter]
+	public Task<AuthenticationState> AuthState { get; set; }
     private PressModel? press = null;
     protected override async Task OnInitializedAsync()
     {
         press = await pressProcess.LoadPress(id);
+		var authState = await AuthState;
+        if (authState.User.Identity.IsAuthenticated)
+		{
+			authorID = int.Parse(authState.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            if (authorID!= press.author_id)
+                NavManager.NavigateTo("/");
+        }
     }
     private bool saving = false;
     private async Task Save()

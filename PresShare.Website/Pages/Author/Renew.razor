@@ -23,6 +23,8 @@
 </EditForm>
 
 @code {
+    [CascadingParameter]
+	public Task<AuthenticationState> AuthState { get; set; }
     private string passwordConfirm { get; set; }
     private string newpassword { get; set; }
     private bool success { get; set; }
@@ -34,6 +36,9 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var authState = await AuthState;
+        if (authState.User.Identity.IsAuthenticated)
+			NavManager.NavigateTo("/");
         author = new AuthorModel();
     }
 

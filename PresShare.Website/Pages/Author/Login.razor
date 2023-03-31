@@ -29,6 +29,8 @@ Remember me</label>
 
 
 @code {
+	[CascadingParameter]
+	public Task<AuthenticationState> AuthState { get; set; }
 	private AuthenticatinoAuthorModel? author;
 	private bool adding = false;
 	private bool failure=false;
@@ -38,6 +40,9 @@ Remember me</label>
 	private int calledNumber=0;
 	protected override async Task OnInitializedAsync()
 	{
+		var authState = await AuthState;
+        if (authState.User.Identity.IsAuthenticated)
+			NavManager.NavigateTo("/");
 		author = new AuthenticatinoAuthorModel();
 	}
 

@@ -8,7 +8,6 @@
 @inject NavigationManager NavManager
 
 <h2 class="center">Sign up</h2>
-<h3>@Utils.RandomString(60)</h3>
 @if (adding)
 {
 	<p>Adding author...</p>
@@ -40,6 +39,8 @@
 	</EditForm>	
 
 @code {
+	[CascadingParameter]
+	public Task<AuthenticationState> AuthState { get; set; }
 	private AuthorModel? author;
 	private bool adding = false;
 	private int calledNumber=0;
@@ -48,6 +49,10 @@
 		private List<Task<AuthorModel>> Verifications = new List<Task<AuthorModel>>();
 	protected override async Task OnInitializedAsync()
 	{
+		var authState = await AuthState;
+        if (authState.User.Identity.IsAuthenticated)
+			NavManager.NavigateTo("/");
+
 		author = new AuthorModel();
 	}
 

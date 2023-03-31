@@ -20,11 +20,16 @@
 
 
 @code {
+    [CascadingParameter]
+	public Task<AuthenticationState> AuthState { get; set; }
 	private AuthorModel? author;
 	private bool failure=false;
     
 	protected override async Task OnInitializedAsync()
 	{
+       var authState = await AuthState;
+        if (authState.User.Identity.IsAuthenticated)
+			NavManager.NavigateTo("/");
         author = new AuthorModel();
 	}
 

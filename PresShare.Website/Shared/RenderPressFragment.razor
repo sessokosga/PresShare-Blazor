@@ -54,21 +54,22 @@
     private List<Task<int>> DeleteTasks = new List<Task<int>>();
 
     public async void Delete(PressModel p){
+        if (p.author_id.ToString() == authorID){
             Delequeue.Add(p.id);
-        DeleteTasks.Add(pressProcess.DeletePress(p.id));
-        while(DeleteTasks.Any()){
-            Task<int> finishedTask = await Task.WhenAny(DeleteTasks);
-            DeleteTasks.Remove(finishedTask);
-            var id = await finishedTask;
-            if (id>0){                
-                NavManager.NavigateTo(NavManager.Uri,true);
+            DeleteTasks.Add(pressProcess.DeletePress(p.id));
+            while(DeleteTasks.Any()){
+                Task<int> finishedTask = await Task.WhenAny(DeleteTasks);
+                DeleteTasks.Remove(finishedTask);
+                var id = await finishedTask;
+                if (id>0){
+                    NavManager.NavigateTo(NavManager.Uri,true);
+                }
             }
         }
     }
 
     protected override async Task OnInitializedAsync(){
         var authState = await AuthState;
-
         if(authState.User.Identity.IsAuthenticated){
             authorID = authState.User.FindFirst(ClaimTypes.NameIdentifier).Value;            
         }

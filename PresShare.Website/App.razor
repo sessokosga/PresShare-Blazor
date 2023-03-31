@@ -4,7 +4,12 @@
             <Authorizing>
                 <p>Please wait, we are authorizing you</p>
             </Authorizing>
+            <NotAuthorized>
+                <p>You need to log in first.</p>
+                <PresShare.Website.Pages.Author.Login/>
+            </NotAuthorized>
         </AuthorizeRouteView>
+        
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
     </Found>
     <NotFound>
