@@ -37,7 +37,7 @@ public class JwtParser
                 base64 += "==";
                 break;
             case 3:
-                base64 += "==";
+                base64 += "=";
                 break;
         }
         return Convert.FromBase64String(base64);

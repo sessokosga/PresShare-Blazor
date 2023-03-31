@@ -1,3 +1,4 @@
+using PresShare.DataAccess.Lib.Hasher;
 using PresShare.DataAccess.Lib.DbAccess;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddSingleton<IAuthorData,AuthorData>();
 builder.Services.AddSingleton<IPressData,PressData>();
 

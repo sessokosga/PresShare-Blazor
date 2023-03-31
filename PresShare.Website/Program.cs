@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components.Authorization;
+using PresShare.DataAccess.Lib.Hasher;
 using PresShare.Website.Api;
 using PresShare.Website.Authentication;
 
@@ -8,9 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-// builder.Services.AddHttpClient();
 builder.Services.AddScoped<IMyAuthenticationService, MyAuthenticationService>();
 builder.Services.AddAuthenticationCore();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
 builder.Services.AddTransient<PressProcessor>();
 builder.Services.AddTransient<AuthorProcessor>();

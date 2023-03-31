@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using PresShare.DataAccess.Lib.Hasher;
 
 namespace PresShare.DataAccess.Api.Controllers;
 
@@ -11,10 +12,12 @@ namespace PresShare.DataAccess.Api.Controllers;
 public class AuthorsController : ControllerBase
 {
     private readonly ILogger<AuthorsController> _logger;
+    private IPasswordHasher _passwordHasher;
 
-    public AuthorsController(ILogger<AuthorsController> logger)
+    public AuthorsController(ILogger<AuthorsController> logger, IPasswordHasher passwordHasher)
     {
         _logger = logger;
+        _passwordHasher = passwordHasher;
     }
 
     [HttpGet]
@@ -136,7 +139,7 @@ public class AuthorsController : ControllerBase
                 return null;
             else
             {
-                if( auth.password == password)
+                if( _passwordHasher.Verify(auth.password,password))
                     return auth.pseudo;
                 else
                     return null;
@@ -144,7 +147,7 @@ public class AuthorsController : ControllerBase
         }
         else
         {
-            if( author.password == password)
+            if( _passwordHasher.Verify(author.password,password))
                 return author.pseudo;
             else
                 return null;
@@ -156,6 +159,7 @@ public class AuthorsController : ControllerBase
     {
         try
         {
+            author.password = _passwordHasher.Hash(author.password);
             await data.InsertAuthor(author);
             return Results.Ok();
         }
@@ -169,7 +173,7 @@ public class AuthorsController : ControllerBase
     public async Task<IResult> UpdateAuthor(AuthorModel author, IAuthorData data)
     {
         try
-        {
+        {            
             await data.UpdateAuthor(author);
             return Results.Ok();
         }
